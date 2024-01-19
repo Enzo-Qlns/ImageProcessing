@@ -1,0 +1,8 @@
+.dist
+.vscode
+cmake-build-debug
+main.dSYM
+result/*
+features
+main
+.DS_Store
