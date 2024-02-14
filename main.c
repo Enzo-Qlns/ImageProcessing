@@ -672,11 +672,11 @@ int main()
                 printf("Dans quel sens souhaitez-vous faire pivoter dans l'image ? \n - Dans le sens d'une aiguille d'une montre (1) \n - Dans le sens inverse d'une aiguille d'une montre (2) \n> ");
                 scanf("%d", &clockwise);
 
-                // Apply pivoting to the copied image
+                // Applique la rotation à l'image
                 pivoter(&myImageCopy, angleRotation, clockwise == 1 ? true : false);
                 break;
             case 2:
-                // Apply a Sobel filter to the copied image
+                // Applique un filtre Sobel à l'image
                 sobel(sobelX, sobelY, &myImageCopy);
                 break;
             case 3:
@@ -684,7 +684,7 @@ int main()
                 printf("Quel est le montant de translation que vous souhaitez appliquer à l'image ? \n> ");
                 scanf("%d", &translationAmount);
 
-                // Translate the copied image
+                // Translate l'image
                 translation(&myImageCopy, translationAmount);
                 break;
             case 4:
@@ -692,15 +692,15 @@ int main()
                 printf("Quel est le niveau de seuillage que vous souhaitez appliquer à l'image ? \n> ");
                 scanf("%d", &thresholdValue);
 
-                // Apply thresholding to the copied image
+                // Applique un seuil à l'image
                 seuillage(&myImageCopy, thresholdValue);
                 break;
             case 5:
-                // Resize the copied image
+                // Redimensionne l'image
                 redimensionner(&myImageCopy);
                 break;
             case 6:
-                // Generate and save histogram for the copied image
+                // Génère un histogramme de l'image
                 histogramme(&myImageCopy);
                 break;
             case 7:
@@ -708,23 +708,23 @@ int main()
                 printf("Quel est le niveau de contraste que vous souhaitez appliquer à l'image ? \n> ");
                 scanf("%f", &ajustContrastLevel);
 
-                // Adjust contrast for the copied image
+                // Ajoute du contraste à l'image
                 contraste(&myImageCopy, ajustContrastLevel);
                 break;
             case 8:
-                // Demande du niveau de contraste
+                // Demande du niveau de luminosité
                 printf("Quel est le niveau de luminosité que vous souhaitez appliquer à l'image ? \n> ");
                 scanf("%f", &ajustLuminosityLevel);
 
-                // Adjust brightness for the copied image
+                // Ajoute de la luminosité à l'image
                 luminosite(&myImageCopy, ajustLuminosityLevel);
                 break;
             case 9:
-                // Apply blur to the copied image
+                // Applique un effet flou à l'image
                 flouter(&myImageCopy);
                 break;
             case 10:
-                // Apply negative to the copied image
+                // Applique un effet négatif à l'image
                 negatif(&myImageCopy);
                 break;
             case 11:
@@ -732,22 +732,22 @@ int main()
                 printf("Quelle est la taille de pixel que vous souhaitez appliquer à l'image ? \n> ");
                 scanf("%d", &taillePixel);
 
-                // Pixelize the copied image with a pixel size of 10
+                // Pixelise l'image copiée avec une taille de pixel de 10
                 pixeliser(&myImageCopy, taillePixel);
                 break;
             case 0:
-                // Quit the program
+                // Quitte le menu
                 break;
             default:
                 printf("Invalid option. Please choose a valid option.\n");
                 break;
         }
 
-        // Libérer la mémoire allouée pour l'image copiée
+        // Libére la mémoire allouée pour l'image copiée
         freeImageMemory(&myImageCopy);
     } while (choix != 0);
 
-    // Libérer la mémoire allouée pour l'image originale
+    // Libére la mémoire allouée pour l'image originale
     freeImageMemory(&myImage);
 
     return 0;
