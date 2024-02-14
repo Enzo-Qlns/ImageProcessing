@@ -259,9 +259,10 @@ void seuillage(struct imageNB *img, int seuil)
  */
 void redimensionner(struct imageNB *img)
 {
+    int amoutScale = 3;
     struct imageNB tr;
-    tr.width = img->width * 2;
-    tr.height = img->height * 2;
+    tr.width = img->width * amoutScale;
+    tr.height = img->height * amoutScale;
     tr.vmax = img->vmax;
     tr.color = malloc(tr.height * sizeof(unsigned char *));
 
@@ -280,6 +281,7 @@ void redimensionner(struct imageNB *img)
             tr.color[j * 2 + 1][i * 2 + 1] = tr.color[j * 2][i * 2];
         }
     }
+
     savePGM(&tr, "./result/redimensionner.pgm");
 
     // Free the allocated memory for tr.color
@@ -445,7 +447,7 @@ void flouter(struct imageNB *img)
  * @param angle
  * @param clockwise
  */
-void pivoter(struct imageNB *img, double angle, bool clockwise)
+void pivoter(struct imageNB *img, float angle, bool clockwise)
 {
     double radians = angle * M_PI / 180.0;
 
@@ -510,7 +512,8 @@ void pivoter(struct imageNB *img, double angle, bool clockwise)
     }
 
     char filename[100];
-    snprintf(filename, sizeof(filename), "./result/rotation_%d_degrees.pgm", (int)angle);
+    snprintf(filename, sizeof(filename), "./result/rotation_%d_degrees_%s.pgm", (int)angle,clockwise == 1 ? "in_clockwise" : "not_in_clockwise");
+    printf("%s", filename);
     savePGM(&rotatedImg, filename);
 
     for (int i = 0; i < rotatedImg.height; i++)
@@ -624,7 +627,7 @@ int main()
         printf("2. Filtre de Sobel\n");
         printf("3. Translation\n");
         printf("4. Seuillage\n");
-        printf("5. Scale\n");
+        printf("5. Redimensionner\n");
         printf("6. Histogramme\n");
         printf("7. Contrast\n");
         printf("8. Luminosité\n");
@@ -641,37 +644,54 @@ int main()
         struct imageNB myImageCopy;
         copyImage(&myImage, &myImageCopy);
 
+        float angleRotation = 0.0;
+        int clockwise = 0;
+
         int sobelX[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
         int sobelY[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
-        int translationAmount = 150;
+        int translationAmount = 0;
 
-        float angleRotation = 45.0;
+        int thresholdValue = 0;
 
-        float ajustContrastLevel = 25;
+        float ajustContrastLevel = 0;
 
-        float ajustLuminosityLevel = 25;
+        float ajustLuminosityLevel = 0;
 
-        int thresholdValue = 128;
-
-        int taillePixel = 10;
+        int taillePixel = 0;
 
         // Appliquer la transformation correspondante en fonction du choix
         switch (choix)
         {
             case 1:
-                // Rotate the copied image by 45 degrees counterclockwise
-                pivoter(&myImageCopy, angleRotation, false);
+                // Demande l'ange de rotation
+                printf("De combien de degrés souhaitez-vous faire pivoter l'image ? \n> ");
+                scanf("%f", &angleRotation);
+
+                // Demande si le pivotage est dans le sens d'une aiguille d'une montre ou non
+                printf("Dans quel sens souhaitez-vous faire pivoter dans l'image ? \n - Dans le sens d'une aiguille d'une montre (1) \n - Dans le sens inverse d'une aiguille d'une montre (2) \n> ");
+                scanf("%d", &clockwise);
+
+                // Apply pivoting to the copied image
+                pivoter(&myImageCopy, angleRotation, clockwise == 1 ? true : false);
                 break;
             case 2:
                 // Apply a Sobel filter to the copied image
                 sobel(sobelX, sobelY, &myImageCopy);
                 break;
             case 3:
+                // Demande du niveau de translation
+                printf("Quel est le montant de translation que vous souhaitez appliquer à l'image ? \n> ");
+                scanf("%d", &translationAmount);
+
                 // Translate the copied image
                 translation(&myImageCopy, translationAmount);
                 break;
             case 4:
+                // Demande du niveau de seuillage
+                printf("Quel est le niveau de seuillage que vous souhaitez appliquer à l'image ? \n> ");
+                scanf("%d", &thresholdValue);
+
                 // Apply thresholding to the copied image
                 seuillage(&myImageCopy, thresholdValue);
                 break;
@@ -684,10 +704,18 @@ int main()
                 histogramme(&myImageCopy);
                 break;
             case 7:
+                // Demande du niveau de contraste
+                printf("Quel est le niveau de contraste que vous souhaitez appliquer à l'image ? \n> ");
+                scanf("%f", &ajustContrastLevel);
+
                 // Adjust contrast for the copied image
                 contraste(&myImageCopy, ajustContrastLevel);
                 break;
             case 8:
+                // Demande du niveau de contraste
+                printf("Quel est le niveau de luminosité que vous souhaitez appliquer à l'image ? \n> ");
+                scanf("%f", &ajustLuminosityLevel);
+
                 // Adjust brightness for the copied image
                 luminosite(&myImageCopy, ajustLuminosityLevel);
                 break;
@@ -700,6 +728,10 @@ int main()
                 negatif(&myImageCopy);
                 break;
             case 11:
+                // Demande du niveau de contraste
+                printf("Quelle est la taille de pixel que vous souhaitez appliquer à l'image ? \n> ");
+                scanf("%d", &taillePixel);
+
                 // Pixelize the copied image with a pixel size of 10
                 pixeliser(&myImageCopy, taillePixel);
                 break;
